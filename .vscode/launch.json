@@ -1,0 +1,103 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug NTK (Newton Toolkit)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/VSCode/mosrun",
+            "args": [
+                "---run",
+                "/Users/matt/dev/Newton/NewtonDev/NewtonDev.ux/NTK 1.6.4/Newton Toolkit"
+            ],
+            "stopAtEntry": false,
+            "cwd": "/Users/matt/dev/Newton/NewtonDev/NewtonDev.ux/NTK 1.6.4/",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build"
+        },
+        {
+            "name": "Debug NTK with Verbosity",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/VSCode/mosrun",
+            "args": [
+                "---verbosity=debug",
+                "---checkmem",
+                "---run",
+                "/Users/matt/dev/Newton/NewtonDev/NewtonDev.ux/NTK 1.6.4/Newton Toolkit"
+            ],
+            "stopAtEntry": false,
+            "cwd": "/Users/matt/dev/Newton/NewtonDev/NewtonDev.ux/NTK 1.6.4/",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build"
+        },
+        {
+            "name": "Debug mosrun (standalone)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/VSCode/mosrun",
+            "args": [
+                "---help"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build"
+        },
+        {
+            "name": "Debug ARMCpp",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/VSCode/mosrun",
+            "args": [
+                "---verbosity=debug",
+                "---run",
+                "${workspaceFolder}/build/VSCode/ARMCpp",
+                "---help"
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build"
+        }
+    ]
+}

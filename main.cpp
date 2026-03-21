@@ -333,7 +333,7 @@ int runApp()
 /**
  * Create MPW RAM structures that will be accessed by the emulator.
  *
- * This functions also interpretes the command line arguments.
+ * This functions also interprets the command line arguments.
  *
  * \todo This function must be split up. It's much too long.
  */
@@ -426,7 +426,7 @@ int setupSystem(int argc, const char **argv, const char**)
     for (i=0; i<srcArgc; i++) {
         const char *arg = srcArgv[i];
         // TODO: spot tripple-dash commands and take them off the list
-        // TODO: argv[0] should only be the filename (MacOS has a 32 byte limt here!
+        // TODO: argv[0] should only be the filename (MacOS has a 32 byte limit here!
         if (i==0) {
             // FIXME: 0x0910 CurApName (Str32)
             arg = mosFilenameName(arg);

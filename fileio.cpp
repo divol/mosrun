@@ -181,7 +181,7 @@ void trapSyRead(uint16_t) {
     unsigned int size = m68k_read_memory_32(file+12);
     int ret = 0;
     if (allin_data_utf8_to_mac) {
-      // TODO: this is fishi because the file length is not calculated correctly
+      // TODO: this is fishy because the file length is not calculated correctly
       char ubuf[8];
       unsigned int usize = 0;
       unsigned int uindex = 0;

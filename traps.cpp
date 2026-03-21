@@ -53,6 +53,7 @@
 #include "memory.h"
 #include "resourcefork.h"
 #include "breakpoints.h"
+#include "systemram.h"
 #include "fileio.h"
 
 // Inlcude Musahi's m68k emulator
@@ -111,7 +112,7 @@ void hexDump(mosPtr a, unsigned int n)
 
 uint16_t gCurrentTrap = 0;
 
-// every entry in this array points to an m68k code segmen ("glue") that calls a native function in host memory
+// every entry in this array points to an m68k code segment ("glue") that calls a native function in host memory
 mosPtr *tncTable = 0;
 
 
@@ -700,7 +701,9 @@ void trapHPurge(unsigned short )
 
 
 /**
- * [A9A3] Release a resource from memory unless it changed.
+ * [A9A3] PROCEDURE ReleaseResource(theResource: Handle);
+ *
+ * Release a resource from memory unless it changed.
  *
  * We never release resources.
  */
@@ -739,6 +742,29 @@ void trapCurResFile(unsigned short )
 
 
 /**
+ * [A99B] Set the gMosResLoad flag.
+ *
+ * sp+4.w  = flag
+ * sp.l    = return address
+ *
+ * Flag should be honored by GetResource and GetNamedResource.
+ */
+void trapSetResLoad(unsigned short )
+{
+    unsigned int sp   = m68k_get_reg(0L, M68K_REG_SP);
+
+    unsigned int ret  = m68k_read_memory_32(sp); sp += 4;
+    unsigned int flag = m68k_read_memory_16(sp); sp += 2;
+
+    gMosResLoad = flag ? 1 : 0;
+    sp-=4; m68k_write_memory_32(sp, ret); // FIXME: stack correct?
+
+    m68k_set_reg(M68K_REG_SP, sp);
+    m68k_set_reg(M68K_REG_D0, 0);
+}
+
+
+/**
  * [A9A4] Use this Resource file from now on.
  *
  * We support only a single Resource file, so, yeah, OK.
@@ -748,7 +774,7 @@ void trapHomeResFile(unsigned short )
     unsigned int sp   = m68k_get_reg(0L, M68K_REG_SP);
 
     unsigned int ret  = m68k_read_memory_32(sp); sp += 4;
-    unsigned int hdl = m68k_read_memory_32(sp); sp+=4;
+    unsigned int hdl  = m68k_read_memory_32(sp); sp += 4;
 
     hdl = 0;
 
@@ -757,6 +783,35 @@ void trapHomeResFile(unsigned short )
 
     m68k_set_reg(M68K_REG_SP, sp);
     m68k_set_reg(M68K_REG_D0, 0);
+}
+
+/**
+ * [A9A6] Get the attributes for a resource.
+ *
+ * sp+4.l  = res handle
+ * sp.l    = return address
+ *
+ * resSysHeap     =  64;   {set if read into system heap}
+ * resPurgeable   =  32;   {set if purgeable}
+ * resLocked      =  16;   {set if locked}
+ * resProtected   =   8;   {set if protected}
+ * resPreload     =   4;   {set if to be preloaded}
+ * resChanged     =   2;   {set if to be written to resource fork}
+ * result code: resNotFound = -192, or 0
+ */
+void trapGetResAttrs(unsigned short )
+{
+    unsigned int sp   = m68k_get_reg(0L, M68K_REG_SP);
+
+    unsigned int ret  = m68k_read_memory_32(sp); sp += 4;
+    unsigned int hdl  = m68k_read_memory_32(sp); sp += 4;
+
+
+    m68k_write_memory_32(sp, 0);
+    sp-=4; m68k_write_memory_32(sp, ret);  // FIXME: stack correct?
+
+    m68k_set_reg(M68K_REG_SP, sp);
+    m68k_set_reg(M68K_REG_D0, 0); // return attributes here
 }
 
 
@@ -951,8 +1006,8 @@ void trapHOpen(unsigned short )
  *
  * This function serves two purposes. It points out unimplemented traps that
  * are called during simulation. It also serves as a dummy address for all
- * unimplmented traps, which is often used at run-time to find out if certain
- * traps are actually implemented. This is whay there ia a complete lookup
+ * unimplemented traps, which is often used at run-time to find out if certain
+ * traps are actually implemented. This is when there is a complete lookup
  * table for each possible trap number.
  *
  * No inputs or outputs.
@@ -1166,7 +1221,9 @@ void mosSetupTrapTable()
     createGlue(0xA9A3, trapReleaseResource);
     createGlue(0xA051, trapReadXPRam);
     createGlue(0xA994, trapCurResFile);
+    createGlue(0xA99B, trapSetResLoad);
     createGlue(0xA9A4, trapHomeResFile);
+    createGlue(0xA9A6, trapGetResAttrs);
 }
 
 

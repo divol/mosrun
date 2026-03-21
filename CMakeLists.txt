@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 3.16)
 project (mosrun)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -72,3 +72,11 @@ add_custom_target(documentation SOURCES
     scratchpad.txt
     )
 
+# Custom targets for running with different configurations
+add_custom_target(NTK
+    COMMAND ${CMAKE_CURRENT_BINARY_DIR}/mosrun ---run "/Users/matt/dev/Newton/NewtonDev/NewtonDev.ux/NTK 1.6.4/Newton Toolkit"
+    DEPENDS mosrun
+    WORKING_DIRECTORY "/Users/matt/dev/Newton/NewtonDev/NewtonDev.ux/NTK 1.6.4/"
+    COMMENT "Running NTK via mosrun"
+    USES_TERMINAL
+)
